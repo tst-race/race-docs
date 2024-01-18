@@ -6,14 +6,14 @@ We provide a list of channels below, along with the `deployment create` argument
 | Channel Name | Client Support? | Android Support? | Description |
 |- |- |- |- |
 | [Obfs](#obfs)  | :x: | :x: | Reliable look-like-nothing TCP connection |
-| [Snowflake](https://github.com/tst-race/race-snowflake) | :x: | :x: | Encrypted WebRTC connection |
-| [Raven](https://github.com/tst-race/race-raven) | :white_check_mark: | :x: | Sends data as PGP-encrypted emails with realistic sending patterns |
-| [ssEmail](https://github.com/tst-race/race-semanticsteg) | :white_check_mark: | :white_check_mark: | Encodes data in steganographically _generated_ images attached to emails |
-| [ssRedis](https://github.com/tst-race/race-semanticsteg) | :white_check_mark: | :x: | Encodes data in steganographically _generated_ images posted to a redis "whiteboard" |
-| [destiniPixelfed](https://github.com/tst-race/race-destini) | :white_check_mark: | :white_check_mark: | Steganographically encodes data into existing images posted to a redis "whiteboard" |
-| [destiniAvideo](https://github.com/tst-race/race-destini) | :white_check_mark: | :x: | Steganographically encodes data into videos posted to a redis "whiteboard" |
-| [destiniDash](https://github.com/tst-race/race-destini) | :x: | :x: | Steganographically encodes data into videos streamed from one RACE node to another; uses destiniPixelfed as a signaling mechanism for orchestrating video streams |
-| [butkus](https://github.com/tst-race/race-butkus)* | :white_check_mark: | :x: | Encodes data into _generated_ natural language text; *: decomposed Encoding _component_, used in combination with other components, see [Decomposed Comms Plugins]() |
+| [Snowflake](#snowflake) | :x: | :x: | Encrypted WebRTC connection |
+| [Raven](#raven) | :white_check_mark: | :x: | Sends data as PGP-encrypted emails with realistic sending patterns |
+| [ssEmail](#ssEmail) | :white_check_mark: | :white_check_mark: | Encodes data in steganographically _generated_ images attached to emails |
+| [ssRedis](#ssRedis) | :white_check_mark: | :x: | Encodes data in steganographically _generated_ images posted to a redis "whiteboard" |
+| [destiniPixelfed](#destiniPixelfed) | :white_check_mark: | :white_check_mark: | Steganographically encodes data into existing images posted to a redis "whiteboard" |
+| [destiniAvideo](#destiniAvideo) | :white_check_mark: | :x: | Steganographically encodes data into videos posted to a redis "whiteboard" |
+| [destiniDash](#destiniDash) | :x: | :x: | Steganographically encodes data into videos streamed from one RACE node to another; uses destiniPixelfed as a signaling mechanism for orchestrating video streams |
+| [butkus](#butkus)* | :white_check_mark: | :x: | Encodes data into _generated_ natural language text; *: decomposed Encoding _component_, used in combination with other components, see [Decomposed Comms Plugins]() |
 
 
 
