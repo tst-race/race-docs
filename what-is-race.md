@@ -8,7 +8,7 @@ In addition to resilience and anonymity, RACE was designed and tested to _scale_
 
 
 ## Software Stack
-RACE was built as a modular plugin-based application for linux and Android environments. For ease of testing (see [RACE Quickstart](https://github.com/tst-race/race-quickstart/)) RACE servers and linux-clients are packaged as dockerized applications with all dependencies pre-installed. For the Android client we have a RACE APK that can be manually installed and is built on Android API-level 29 and currently tested on Android 10 and 11 devices. More information can be found in the [developer docs](https://github.com/tst-race/race-docs/blob/main/RACE%20developer%20guide.md#test-a-change-to-the-core).
+RACE was built as a modular plugin-based application for linux and Android environments. For ease of testing (see [RACE Quickstart](https://github.com/tst-race/race-quickstart/)) RACE servers and linux-clients are packaged as dockerized applications with all dependencies pre-installed. For the Android client we have a RACE APK that can be manually installed and is built on Android API-level 29 and currently tested on Android 10 and 11 devices. More information can be found in the [developer docs](https://github.com/tst-race/race-docs/blob/main/RACE%20developer%20guide.md).
 
 
 ## Architecture
