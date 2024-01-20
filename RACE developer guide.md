@@ -1,7 +1,6 @@
 # **Resilient Anonymous Communication for Everyone (RACE) Developer Guide**
 
 ## **Table of Contents**
-TODO: regenerate ToC once finished
 - [**Resilient Anonymous Communication for Everyone (RACE) Developer Guide**](#resilient-anonymous-communication-for-everyone-race-developer-guide)
   - [**Table of Contents**](#table-of-contents)
   - [**Terminology**](#terminology)
@@ -160,7 +159,7 @@ There are several Mermaid diagrams in this document.  See https://docs.github.co
 </br>
 
 ### **Audience**
-RACE supports plugin development on several host architectures, for several popular languages: C++, Java, GoLang, Rust, and Python.  Familiarity with Docker, Cmake, Clang, C++, and any plugin language of interest is assumed.  It is also assumed that the reader is familiar with the (TODO: TBD) user guide.  
+RACE supports plugin development on several host architectures, for several popular languages: C++, Java, GoLang, Rust, and Python.  Familiarity with Docker, Cmake, Clang, C++, and any plugin language of interest is assumed.  It is also assumed that the reader is familiar with the [RACE Quickstart Guide](https://github.com/tst-race/race-quickstart/blob/main/README.md)
 
 
 ### **Environment**
@@ -1158,11 +1157,36 @@ The [RACE Quickstart guide](https://github.com/tst-race/race-quickstart/blob/mai
 
 ### Using Local Builds
 
-TODO
+To use local builds of images, simply specify the appropriate docker image name. In general, docker images built locally by the RACE repos will have the default `docker.io` registry and are tagged with the name of the branch the repo is on. 
+
+E.g. if you made a local branch named `mybranch` on of the `race-images` repo and then built `race-runtime-linux` and wanted to use it as the image that RACE servers are run in for a deployment, you would provide the following argument to the `rib deployment local create` command:
+
+```
+    --linux-server-image=race-runtime-linux:mybranch
+```
+
+To use a local build of a plugin, you specify a `local=/path/to/kit/in/rib/filesystem` argument. Generally any plugin build should create a top-level directory called `kit` that contains both the runtime artifacts and config-generation support code. The argument should provide the absolute path to that directory within the RiB container (RiB resolves this into a host path which is then volume-mounted into the RACE node containers at runtime).
+
+E.g. assume you have made changes and built the `plugin-twosix-comms-cpp` plugin within the `race-core` repo, and that the `race-core` repo exists at the path `/code/race-core/` in RiB, you would provide the following argument to the `rib deployment local create` command:
+
+```
+    --comms-kit local=/code/race-core/plugin-comms-twosix-cpp/kit
+```
 
 ### RACE outside RiB
- 
-TODO
+
+The divide between the runtime RACE software and the test orchestration facilitated by RiB can be confusing. To aid in rapid prototyping and testing of RACE, RiB does a lot of heavy-lifting in configuring and deploying RACE software for testing. 
+
+At runtime, the following things are what are actually necessary for RACE (i.e. would be necessary on a non-test deployment of RACE):
+
+1. Dependencies installed in [race-runtime-linux Dockerfile](https://github.com/tst-race/race-images/blob/main/runtime-linux/Dockerfile) (note: some of these are only actually necessary for specific RACE plugins)
+1. Core app and language shims, ([racetestapp.tar.gz bundle](https://github.com/tst-race/race-core/releases/download/2.6.0-beta-4/racetestapp-linux.tar.gz)
+1. Network Manager, Artifact Manager, and Comms Plugins
+1. Configuration files 
+
+These pieces can actually be isolated from the filesystem of a RiB deployment by looking at the contents of the `plugins/linux-x86_64-server/` (or any other architecture/node-role combination) which contains items #2 and #3. The configuration files are bundled in .tar.gz files in the deployment `configs/` directory. _In principle_ these files could be manually copied to a separate linux device with the proper dependencies installed and run without issue. 
+
+The main barrier to this "just working" is actually networking: by default, RiB constructs isolated network environments for both the RACE node containers and 3rd-party services (e.g. email servers, etc.) using docker networks, so these would not be reachable by external devices by default. This is why the bridged Android device mode requires use of OpenVPN on the Android device, to access the isolated RiB network.
 
 <br></br>
 
@@ -1655,4 +1679,4 @@ All x's:
  * plugin behavior (see performer dev guide(s))
 
 
-Refer to [Additional Reading](additional-reading) for more information on creating custom plugins.  
+Refer to [Additional Reading](additional-reading) for more information on creating custom plugins.
