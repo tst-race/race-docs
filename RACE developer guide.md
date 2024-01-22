@@ -1191,8 +1191,20 @@ The main barrier to this "just working" is actually networking: by default, RiB 
 <br></br>
 
 ## **Remaining Work**
-This section is a catch all for concepts that aren't fully implemented, well defined, or sufficiently tested.  
-* Server Bootstrapping: no server test app exists, so server bootstrapping may not be fully supported.  
+RACE was a research prototype with ambitious goals and a lot of moving parts, hence some features are either not fully implemented or the implementation is not well-tested.
+
+* Bootstrapping Nodes: there are prototype methods for transferring software artifacts from an existing client device to a new client device, but they are not "real-world ready" and more user-focused development should be done to tailor solutions for a real-world RACE deployment.
+
+* Enrolling Servers: Current bootstrapping/enrollment processes implemented by NetworkManagers is for adding new clients, adding new servers is not currently supported by would need to be for a long-lived real world deployment.
+
+* User Interface: the linux client implementation is written for automated testing and the Android client interface is a minimal chat application. Both need additional development, ideally focused on a particular user case and user population, to be attractive for use. In particular, feedback to the user about the state of their RACE network connection, how long they should expect messages to take to be delivered, how much data they can send in a given period, etc., would be particularly necessary to avoid user frustration.
+
+* Logging and Debugging: most of the plugins retain verbose logging and debugging information that is undesirable for a real-world deployment and would need to be removed before such use. Retaining logging functionality in a privacy-preserving manner to understand system behavior could be valuable.
+
+* Heterogenous Channel Sets: most NetworkManager plugins expect all nodes to support the same set of Comms channels, and would not handle nodes that only support overlapping subsets, or networks where some pairs of nodes cannot connect at all due to incompatible channels.
+
+* Restricted Network Graphs: similar to above, NetworkManager plugins expect to be able to create arbitrary topologies over the set of nodes, and do not necessarily deal "intelligently" with pairs of nodes being unable to connect. The resilience/redundancy built into the topology may enable the RACE network to function nonetheless.
+
 
 <br></br>
 
