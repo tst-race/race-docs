@@ -5,6 +5,8 @@ We provide a list of channels below, along with the `deployment create` argument
 
 | Channel Name | Client Support? | Android Support? | Description |
 |- |- |- |- |
+| [twoSixDirectCpp](#twoSixDirectCpp) | :x: | :x: | Example/testing channel, a simple TCP socket |
+| [twoSixIndirectCpp](#twoSixIndirectCpp) | :white_check_mark: | :white_check_mark: | Example/testing channel, base64-encodes data and posts to a local redis server | 
 | [Obfs](#obfs)  | :x: | :x: | Reliable look-like-nothing TCP connection |
 | [Snowflake](#snowflake) | :x: | :x: | Encrypted WebRTC connection |
 | [Raven](#raven) | :white_check_mark: | :x: | Sends data as PGP-encrypted emails with realistic sending patterns |
@@ -15,6 +17,26 @@ We provide a list of channels below, along with the `deployment create` argument
 | [destiniDash](#destiniDash) | :x: | :x: | Steganographically encodes data into videos streamed from one RACE node to another; uses destiniPixelfed as a signaling mechanism for orchestrating video streams |
 | [butkus](#butkus)* | :white_check_mark: | :x: | Encodes data into _generated_ natural language text; *: decomposed Encoding _component_, used in combination with other components, see [Decomposed Comms Plugins]() |
 
+
+
+## twoSixDirectCpp
+__Deployment Create Argument:__ 
+```
+--comms-channel=twoSixDirectCpp \
+--comms-kit=tag=2.6.0,org=tst-race,repo=race-core,asset=plugin-comms-twosix-cpp.tar.gz
+```
+
+__Source Code Repository:__ https://github.com/tst-race/https://github.com/tst-race/race-core/tree/2.6.0/plugin-comms-twosix-cpp
+
+
+## twoSixIndirectCpp
+__Deployment Create Argument:__ 
+```
+--comms-channel=twoSixIndirectCpp \
+--comms-kit=tag=2.6.0,org=tst-race,repo=race-core,asset=plugin-comms-twosix-cpp.tar.gz
+```
+
+__Source Code Repository:__ https://github.com/tst-race/https://github.com/tst-race/race-core/tree/2.6.0/plugin-comms-twosix-cpp
 
 
 ## Obfs

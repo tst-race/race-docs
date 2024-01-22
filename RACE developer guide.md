@@ -1,7 +1,6 @@
 # **Resilient Anonymous Communication for Everyone (RACE) Developer Guide**
 
 ## **Table of Contents**
-TODO: regenerate ToC once finished
 - [**Resilient Anonymous Communication for Everyone (RACE) Developer Guide**](#resilient-anonymous-communication-for-everyone-race-developer-guide)
   - [**Table of Contents**](#table-of-contents)
   - [**Terminology**](#terminology)
@@ -117,12 +116,8 @@ TODO: regenerate ToC once finished
 * **Deployment**: A set of artifacts and parameters instantiated as a network of RACE nodes
 * **Bootstrapping**: The secure, anonymous process by which a node joins a RACE network some time after network deployment
 * **Introduction**: Process by which a trusted RACE node introduces a new node into a RACE network in a secure, anonymous fashion.  This is part of the bootstrapping process.  
-* **Epoch Switching**: Shuffle active servers to spread out concentrations of corruptions, and swap in previously inactive (less likely to be corrupted) servers
-TODO: do we mention/cover epoch switching in this document?  Or does it go in the user guide?  Or should this be managed by the performs entirely?  Not sure it makes sense to have Core initiate the epoch commands...as the servers themselves should be able to self-govern.  
 * **Oblivious routing**: The act of RACE servers routing messages from one node to another without discovering the origin or destination of each message
 * **MPC**: Multi-Party Computation
-* 
-* TODO: others
 
 <br></br>
 
@@ -164,7 +159,7 @@ There are several Mermaid diagrams in this document.  See https://docs.github.co
 </br>
 
 ### **Audience**
-RACE supports plugin development on several host architectures, for several popular languages: C++, Java, GoLang, Rust, and Python.  Familiarity with Docker, Cmake, Clang, C++, and any plugin language of interest is assumed.  It is also assumed that the reader is familiar with the (TODO: TBD) user guide.  
+RACE supports plugin development on several host architectures, for several popular languages: C++, Java, GoLang, Rust, and Python.  Familiarity with Docker, Cmake, Clang, C++, and any plugin language of interest is assumed.  It is also assumed that the reader is familiar with the [RACE Quickstart Guide](https://github.com/tst-race/race-quickstart/blob/main/README.md)
 
 
 ### **Environment**
@@ -172,12 +167,10 @@ RACE supports plugin development on several host architectures, for several popu
 RACE artifacts were built on the following host platforms:
 * x86_x64 (built using Ubuntu)
 * arm64-v8a/aarch64 (built using Apple M1)
-* TODO: will we support android builds on aarch64?
 
 #### **Supported Clients**
 * Ubuntu 20.04 (arm-v8a/aarch64 and x86_64)
 * Android OS versions 10, 11 and 12 
-* TODO: revisit after final android wrt current limitations due to changes to storage permissions changes
 
 #### **Supported Servers**
 * Ubuntu 20.04 (arm-v8a/aarch64 and x86_64)
@@ -195,13 +188,10 @@ All RACE Core software is licensed under the Apache License, Version 2.0.  You m
 
 
 ### **Additional Reading**
-TODO: reference TBD user guide
-
-TODO: reference TBD TA1 dev guide
-
-TODO: reference TBD TA2 dev guide
-
-TODO: reference TBD performer docs
+- [RACE Quickstart](https://github.com/tst-race/race-quickstart/blob/main/README.md)
+- [What is RACE: The Longer Story](https://github.com/tst-race/race-docs/blob/main/what-is-race.md)
+- [Full list of RACE Channels](https://github.com/tst-race/race-docs/blob/main/race-channels.md)
+- [RiB Documentation](https://github.com/tst-race/race-in-the-box/tree/2.6.0/documentation)
 
 <br></br>
 
@@ -249,7 +239,6 @@ A genesis node is one that is started during RACE network initialization.  The c
 
 #### **Bootstrapped Node**
 A bootstrapped node is one that joins a RACE network by being introduced by another node in a RACE network after network initialization.  A trusted node in a RACE network can initiate the introduction process of a new trusted node into its RACE network.  It should be done so in a secure, anonymous fashion.  
-TODO: refer to the bootstrapping process in the user guide?  Or do we want a sequence diagram?
 
 </br>
 
@@ -655,7 +644,6 @@ Bob, the node being introduced, will request the artifacts outside of the Messag
 
 * All the while, presenting status information to the user (all but the last notification is omitted in this sequence diagram)
 * At this point Bob's device has all artifacts and persistent communication-related information to (a) send and receive messages to and from other RACE nodes and (b) start a new messaging session in the future
-* TODO: Refer to TDB NetworkManager developer guide for more details
 
 ```mermaid
 sequenceDiagram
@@ -987,8 +975,6 @@ The source in this directory produces the following artifacts:
 
 ###### `docker-image`
 
-TODO: update this if anything changes
-
 Dockerfile and script to build `race-sdk` Docker image.
 
 ###### `java-shims`
@@ -1046,9 +1032,7 @@ Library to support bypassing the Network Manager plugin to directly test Comms
 plugin functionality.
 
 The source in this directory produces the following artifacts:
-* `libPluginTa1TwoSixTestHarness.a`
-
-TODO: are the lib names with TAn the same after TA aliasing?
+* `libPluginNMTwoSixTestHarness.a`
 
 ##### `race-node-daemon`
 
@@ -1077,8 +1061,7 @@ This directory contains the source for the Android client application:
 
 This directory contains the source for an exemplar RACE registry app.
 
-* Provides client mechanism to send messages to the `racetestapp` background
-  process TODO this isn't right
+* This is an example of an alternate RACE client functionality, in this case an automated lookup service for finding new RACE plugins that combines with the TwoSix Artifact Manager exemplar plugin
 * Is not used in real-world deployments
 
 ##### `race-python-utils`
@@ -1119,8 +1102,6 @@ This repository contains the race-in-the-box (RiB) tool:
 
 See the documentation in the `documentation` folder of the `race-in-the-box`
 repository for more information about using RiB.
-
-TODO: reconsider the following build sections after pulling in build dependency graph image
 
 ## **Building**
 RACE artifacts are built with Docker.  Docker is used as means to create a test overlay network.  
@@ -1172,50 +1153,65 @@ using this script.
 <br></br>
 
 ## **Running**
-Refer to the [Additional Reading](additional-reading) section for more information on starting and running a deployment.  
-TODO: pulling images vs building
+The [RACE Quickstart guide](https://github.com/tst-race/race-quickstart/blob/main/README.md) walks through running test deployments based on prebuilt/prepackaged docker images and plugin kits hosted on Github. The [RiB Documentation](https://github.com/tst-race/race-in-the-box/tree/2.6.0/documentation) provides more comprehensive descriptions of all the RiB commands and how to use them to trigger different RACE software behaviors in the RiB-based test deployment environment. Here we just provide basic instructions for how to run test deployments based on locally build images and plugins, and a description of what would be necessary to run RACE outside of the RiB test environment.
 
-TODO: link to performer documentation landing page after move to github
+### Using Local Builds
 
-TODO: reference the user-guide 
+To use local builds of images, simply specify the appropriate docker image name. In general, docker images built locally by the RACE repos will have the default `docker.io` registry and are tagged with the name of the branch the repo is on. 
 
-TODO: using locally built images (note pulling from "some" container registry)
+E.g. if you made a local branch named `mybranch` on of the `race-images` repo and then built `race-runtime-linux` and wanted to use it as the image that RACE servers are run in for a deployment, you would provide the following argument to the `rib deployment local create` command:
 
-TODO: clarify RiB is for test purposes, not for real-world deployments
+```
+    --linux-server-image=race-runtime-linux:mybranch
+```
+
+To use a local build of a plugin, you specify a `local=/path/to/kit/in/rib/filesystem` argument. Generally any plugin build should create a top-level directory called `kit` that contains both the runtime artifacts and config-generation support code. The argument should provide the absolute path to that directory within the RiB container (RiB resolves this into a host path which is then volume-mounted into the RACE node containers at runtime).
+
+E.g. assume you have made changes and built the `plugin-twosix-comms-cpp` plugin within the `race-core` repo, and that the `race-core` repo exists at the path `/code/race-core/` in RiB, you would provide the following argument to the `rib deployment local create` command:
+
+```
+    --comms-kit local=/code/race-core/plugin-comms-twosix-cpp/kit
+```
+
+### RACE outside RiB
+
+The divide between the runtime RACE software and the test orchestration facilitated by RiB can be confusing. To aid in rapid prototyping and testing of RACE, RiB does a lot of heavy-lifting in configuring and deploying RACE software for testing. 
+
+At runtime, the following things are what are actually necessary for RACE (i.e. would be necessary on a non-test deployment of RACE):
+
+1. Dependencies installed in [race-runtime-linux Dockerfile](https://github.com/tst-race/race-images/blob/main/runtime-linux/Dockerfile) (note: some of these are only actually necessary for specific RACE plugins)
+1. Core app and language shims, ([racetestapp.tar.gz bundle](https://github.com/tst-race/race-core/releases/download/2.6.0-beta-4/racetestapp-linux.tar.gz)
+1. Network Manager, Artifact Manager, and Comms Plugins
+1. Configuration files 
+
+These pieces can actually be isolated from the filesystem of a RiB deployment by looking at the contents of the `plugins/linux-x86_64-server/` (or any other architecture/node-role combination) which contains items #2 and #3. The configuration files are bundled in .tar.gz files in the deployment `configs/` directory. _In principle_ these files could be manually copied to a separate linux device with the proper dependencies installed and run without issue. 
+
+The main barrier to this "just working" is actually networking: by default, RiB constructs isolated network environments for both the RACE node containers and 3rd-party services (e.g. email servers, etc.) using docker networks, so these would not be reachable by external devices by default. This is why the bridged Android device mode requires use of OpenVPN on the Android device, to access the isolated RiB network.
 
 <br></br>
 
 ## **Remaining Work**
 This section is a catch all for concepts that aren't fully implemented, well defined, or sufficiently tested.  
 * Server Bootstrapping: no server test app exists, so server bootstrapping may not be fully supported.  
-* Android/ARM isn't fully supported as of (3/17/23).  TODO: remaining work?
 
 <br></br>
 
 ## **Troubleshooting**
 RACE Artifacts are built on top of Ubuntu docker images.  So, it follows that the RACE troubleshooting philosophy is consistent with Linux systems.  For example, users can check `journalctl` for useful systemd log entries.  
 
-RACE also facilitates logging at the RiB, RACE, and plugin/artifact levels.  It's generally easiest to start with the logs.  `gdb` and `valgrind` are generally reserved for debugging crashes, or anything else not easily discernible by the logs.  
+RACE also facilitates logging at the RiB, RACE, and plugin/artifact levels.  It's generally easiest to start with the logs, which are volume mounted from `~/.race/rib/deployments/local/<deployment name>/logs` on the host to `/logs` in the individual containers.  `gdb` and `valgrind` are generally reserved for debugging crashes, or anything else not easily discernible by the logs.  
 
 </br>
 
 ### **Build Tips**
-TODO: this will probably change once things move to github
-
 There are generally scripts provided to abstract build details.  Most scripts have a `--help` flag.
 
 Everywhere there is a Dockerfile, there is README.md with tips and hints.  
 
-Most projects contain a .gitlab-ci.yml file that was historically used to build the various projects.  These can be referred to for additional tips in building a project.  
-TODO: will this change for github equivalent files?
+Most projects contain build instructions in their README.md, otherwise most are also built in Github CI, so `<repo>/.github/workflows/ci.yml` provides steps that can be run on a local host as well. 
 
-Most projects resulting in RACE artifacts require "cmake modules" to build.  This is facilitated through the common script convention `<repo-base>/<project>/prepare_cmake_modules.sh`.
-
-Errors have commonly arisen from image caching, where the expectation is to have one or new images running in a deployment.  
-TODO: detail 
 
 ### **Common Issues**
-TODO: identify known issues and limitations with RACE Core
 
 Caching stale Docker images has been a common root issue in RiB deployments.  This can be corrected by using the rib deployment [local/aws/te] create --fetch-plugins-on-start or --cached flags in a RiB deployment, or manually removing Docker images via:
 ```
@@ -1390,7 +1386,7 @@ at step #5.
 
 The steps to test a change a RACE plugin are as follows:
 
-1. Build the plugin TODO details
+1. Build the plugin based on its build process
 1. Create a deployment using the locally-built plugin
     ```sh
     rib deployment local create \
@@ -1683,4 +1679,4 @@ All x's:
  * plugin behavior (see performer dev guide(s))
 
 
-Refer to [Additional Reading](additional-reading) for more information on creating custom plugins.  
+Refer to [Additional Reading](additional-reading) for more information on creating custom plugins.
