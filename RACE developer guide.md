@@ -877,6 +877,7 @@ The following are the external dependencies used by RACE.
 * [`ext-gf-complete`](https://github.com/tst-race/ext-gf-complete)
 * [`ext-googletest`](https://github.com/tst-race/ext-googletest)
 * [`ext-jaeger-client-cpp`](https://github.com/tst-race/ext-jaeger-client-cpp)
+* [`ext-jel2`](https://github.com/tst-race/ext-jel2)
 * [`ext-jerasure`](https://github.com/tst-race/ext-jerasure)
 * [`ext-json-c`](https://github.com/tst-race/ext-json-c)
 * [`ext-jsoncpp`](https://github.com/tst-race/ext-jsoncpp)
@@ -914,10 +915,6 @@ of the following directories of the repository represent a Docker image.
 Produces the `race-compile` Docker image used for compiling the RACE core. It
 extends the `ext-builder` image to include all external dependency libraries and
 compilers for all supported plugin languages.
-
-##### `runtime-android-arm64-v8a`
-
-TBD
 
 ##### `runtime-android-x86_64`
 
