@@ -338,49 +338,49 @@ sequenceDiagram
     participant Bob as Bob
     participant CA as Messaging App
     participant SDK as Core
-    participant TA1 as NetworkManager Plugin
-    participant TA2 as Comms Plugin
+    participant NMP as NetworkManager Plugin
+    participant CP as Comms Plugin
 
     activate Bob
     CA->>SDK: 1. enableChannel()
     deactivate Bob
-    SDK->>TA1: onChannelStatusChanged()
-    TA1->>SDK: activateChannel()
-    SDK->>TA2: activateChannel()
-    TA2->>SDK: onChannelStatusChanged()
-    SDK->>TA1: onChannelStatusChanged()
+    SDK->>NMP: onChannelStatusChanged()
+    NMP->>SDK: activateChannel()
+    SDK->>CP: activateChannel()
+    CP->>SDK: onChannelStatusChanged()
+    SDK->>NMP: onChannelStatusChanged()
 
     opt 2.1 present user info
-      TA2->>SDK: displayInfoToUser()
+      CP->>SDK: displayInfoToUser()
       SDK->>CA: displayInfoToUser()
       activate Bob
       CA->>Bob: Channel Available Prompt
       deactivate Bob
       CA->>SDK: onUserAcknowledgementReceived()
-      SDK->>TA2: onUserAcknowledgementReceived()
+      SDK->>CP: onUserAcknowledgementReceived()
     end
     
     opt 2.2 request input
       loop for all user info requests
-        TA2->>SDK: requestPluginUserInput()
+        CP->>SDK: requestPluginUserInput()
         SDK->>CA: requestUserInput()
         activate Bob
         CA->>Bob: User Input Request
         Bob->>CA: response
         deactivate Bob
         CA->>SDK: onUserInputReceived()
-        SDK->>TA2: onUserInputReceived()
+        SDK->>CP: onUserInputReceived()
       end
     end
 
-    TA1->>SDK: 3. createLink() / createLinkFromAddress()
-    SDK->>TA2: createLink()
-    TA2->>SDK: onLinkStatusChanged()
-    SDK->>TA1: onLinkStatusChanged()
-    TA1->>SDK: 4. openConnection()
-    SDK->>TA2: openConnection()
-    TA2->>SDK: onConnectionStatusChanged()
-    SDK->>TA1: onConnectionStatusChanged()
+    NMP->>SDK: 3. createLink() / createLinkFromAddress()
+    SDK->>CP: createLink()
+    CP->>SDK: onLinkStatusChanged()
+    SDK->>NMP: onLinkStatusChanged()
+    NMP->>SDK: 4. openConnection()
+    SDK->>CP: openConnection()
+    CP->>SDK: onConnectionStatusChanged()
+    SDK->>NMP: onConnectionStatusChanged()
 ```
 
 </br>
@@ -398,8 +398,8 @@ sequenceDiagram
     participant Alice as Alice 
     participant CA as Messaging App
     participant SDK as Core
-    participant TA1 as NetworkManager Plugin
-    participant TA2 as Comms Plugin
+    participant NMP as NetworkManager Plugin
+    participant CP as Comms Plugin
     activate CA
     CA->>SDK: 1. getExpectedChannels(Bob's UUID)
     SDK->>CA: channels list
@@ -413,24 +413,24 @@ sequenceDiagram
     deactivate Alice
     deactivate CA
     activate SDK
-    activate TA1
-    SDK->>TA1: 3. processClrMsg()
+    activate NMP
+    SDK->>NMP: 3. processClrMsg()
     
-    TA1->>SDK: 4. loadLinkAddress()
-    SDK->>TA1: linkIDs
-    TA1->>SDK: 5. getLinkProperties()
-    SDK->>TA1: linkProperties
-    TA1->>SDK: 6. openConnection()
-    activate TA2
-    SDK->>TA2: 7. openConnection()
-    TA2->>SDK: connID
-    SDK->>TA1: connID
-    TA1->>SDK: 8. sendEncryptedPackage()
-    SDK->>TA2: 9. sendEncryptedPackage()
-    TA1->>SDK: 11. closeConnection()
-    deactivate TA1
-    SDK->>TA2: 12. closeConnection()
-    deactivate TA2
+    NMP->>SDK: 4. loadLinkAddress()
+    SDK->>NMP: linkIDs
+    NMP->>SDK: 5. getLinkProperties()
+    SDK->>NMP: linkProperties
+    NMP->>SDK: 6. openConnection()
+    activate CP
+    SDK->>CP: 7. openConnection()
+    CP->>SDK: connID
+    SDK->>NMP: connID
+    NMP->>SDK: 8. sendEncryptedPackage()
+    SDK->>CP: 9. sendEncryptedPackage()
+    NMP->>SDK: 11. closeConnection()
+    deactivate NMP
+    SDK->>CP: 12. closeConnection()
+    deactivate CP
     deactivate SDK
 ```
 
@@ -443,18 +443,18 @@ Alice's Comms plugin delivers the message to Bob as result of step 9 in the prev
 * Bob's Messaging App has already registered with the RACE network
 * Link Profiles have been pre-populated with information about each of the links available on the initialized Comms plugin transports, including:
   * Details necessary for the transport to generate a connection object from the link
-  * Link Properties used by TA1 to differentiate and select links
+  * Link Properties used by the Network Manager to differentiate and select links
 
 ```mermaid
 sequenceDiagram
     participant Bob as Bob 
     participant CA as Messaging App
     participant SDK as Core
-    participant TA1 as NetworkManager Plugin
-    participant TA2 as Comms Plugin
-    TA2->>SDK: receiveEncPkg()
-    SDK->>TA1: processEncPkg()
-    TA1->>SDK: presentCleartextMessage()
+    participant NMP as NetworkManager Plugin
+    participant CP as Comms Plugin
+    CP->>SDK: receiveEncPkg()
+    SDK->>NMP: processEncPkg()
+    NMP->>SDK: presentCleartextMessage()
     SDK->>CA: handleReceivedMessage()
     CA->>Bob: present Alice's message
 ```
@@ -466,17 +466,17 @@ Once Bob is done, the following illustrates the inter-workings of leaving the RA
 ```mermaid
 sequenceDiagram
     participant SDK as Core
-    participant TA1 as NetworkManager Plugin
-    participant TA2 as Comms Plugin
-    TA1->>SDK: closeConnection()
-    SDK->>TA2: closeConnection()
-    TA2->>SDK: onConnectionStatusChanged()
-    SDK->>TA1: onConnectionStatusChanged()
+    participant NMP as NetworkManager Plugin
+    participant CP as Comms Plugin
+    NMP->>SDK: closeConnection()
+    SDK->>CP: closeConnection()
+    CP->>SDK: onConnectionStatusChanged()
+    SDK->>NMP: onConnectionStatusChanged()
 
-    TA1->>SDK: destroyLink()
-    SDK->>TA2: destroyLink()
-    TA2->>SDK: onLinkStatusChanged()
-    SDK->>TA1: onLinkStatusChanged()
+    NMP->>SDK: destroyLink()
+    SDK->>CP: destroyLink()
+    CP->>SDK: onLinkStatusChanged()
+    SDK->>NMP: onLinkStatusChanged()
 ```
 
 <br></br>
@@ -486,7 +486,7 @@ What if Alice wants Bob to interact in an existing RACE network for the first ti
 
 The first step in introducing a participant into a RACE network is when the trusted participant calls the `prepareToBootstrap()` API call with the bootstrapping information (device information, channel ID, passphrase).  This should, in turn, open a bootstrap connection within the introducer node so that messages can be received from the node being introduced.  Alice's NetworkManager specifies which channels Bob will receive on.  Alice fetches the selected channels from the ArtifactManager.  Bob downloads the bootstrap package (plugins, app, and configuration) from Alice independent of the RACE app (e.g. curl, browser).  Bob starts the RACE Messaging App for the first time, and opens a connection to Alice in order to continue the NetworkManager-defined bootstrapping process.  
 
-All NetworkManager logic is based on the `plugin-ta2-twosix-cpp` exemplar in the following examples.  Similarly, all Comms logic is based on the `plugin-ta1-twosix-cpp`.  It's important to note that the logic in the following bootstrapping sequence diagrams are plugin defined.  Thus, these examples only serve only to illustrate how bootstrapping ***could*** work.  
+All NetworkManager logic is based on the `plugin-comms-twosix-cpp` exemplar in the following examples.  Similarly, all Comms logic is based on the `plugin-network-manager-twosix-cpp`.  It's important to note that the logic in the following bootstrapping sequence diagrams are plugin defined.  Thus, these examples only serve only to illustrate how bootstrapping ***could*** work.  
 
 
 Prerequisites:
@@ -519,8 +519,8 @@ sequenceDiagram
     participant Alice as Alice
     participant CA as Messaging App
     participant SDK as Core
-    participant TA1 as NetworkManager Plugin
-    participant TA2 as Comms Plugin
+    participant NMP as NetworkManager Plugin
+    participant CP as Comms Plugin
     participant AMP as Artifact Manager
     participant Servers as Server Committee
     participant Bob as Bob
@@ -528,104 +528,104 @@ sequenceDiagram
     Alice->>CA: 1. Bob's info
     CA->>SDK: prepareToBootstrap(passphrase)
 
-    SDK->>TA2: 2. createBootstrapLink()
-    TA2->>SDK: onLinkStatusChanged()
-    SDK->>TA1: onLinkStatusChanged()
+    SDK->>CP: 2. createBootstrapLink()
+    CP->>SDK: onLinkStatusChanged()
+    SDK->>NMP: onLinkStatusChanged()
 
-    SDK->>TA1: 3. prepareToBootstrap()
+    SDK->>NMP: 3. prepareToBootstrap()
 
-    TA1->>SDK: 4. openConnection()
-    SDK->>TA2: openConnection()
-    TA2->>SDK: onConnectionStatusChanged()
-    SDK->>TA1: onConnectionStatusChanged()
+    NMP->>SDK: 4. openConnection()
+    SDK->>CP: openConnection()
+    CP->>SDK: onConnectionStatusChanged()
+    SDK->>NMP: onConnectionStatusChanged()
 
-    Note over TA2: socket listen() to recv on new link
+    Note over CP: socket listen() to recv on new link
 
-    Note over TA1: 5.1 send indirect link-requests to servers
+    Note over NMP: 5.1 send indirect link-requests to servers
     loop for each server in committee
-      TA1->>SDK: sendEncryptedPackage() / indirect link-request to server
-      SDK->>TA2: sendPackage()
-      TA2-->>Servers: link-request
-      TA2->>SDK: onPackageStatusChanged()
-      SDK->>TA1: onPackageStatusChanged()
+      NMP->>SDK: sendEncryptedPackage() / indirect link-request to server
+      SDK->>CP: sendPackage()
+      CP-->>Servers: link-request
+      CP->>SDK: onPackageStatusChanged()
+      SDK->>NMP: onPackageStatusChanged()
 
-      TA1->>SDK: displayInfoToUser()
+      NMP->>SDK: displayInfoToUser()
       SDK->>CA: displayInfoToUser()
       CA->>Alice: info
       CA->>SDK: onUserAcknowledgementReceived()
-      SDK->>TA1: onUserAcknowledgementReceived()
+      SDK->>NMP: onUserAcknowledgementReceived()
 
-      Note over TA1: 5.2 receive link-address from server
-      Servers-->>TA2: link-address
-      TA2->>SDK: receiveEncPkg()
-      SDK->>TA1: processEncPkg()
+      Note over NMP: 5.2 receive link-address from server
+      Servers-->>CP: link-address
+      CP->>SDK: receiveEncPkg()
+      SDK->>NMP: processEncPkg()
     end
-    Note over TA1: add link address(es) to bootstrap package
+    Note over NMP: add link address(es) to bootstrap package
 
-    SDK->>TA1: 6. bootstrapDevice()
+    SDK->>NMP: 6. bootstrapDevice()
     loop for each artifact to be used by Bob
       SDK->>AMP: acquireArtifact()
     end
-    Note over TA1: add artifacts to bootstrap package
+    Note over NMP: add artifacts to bootstrap package
 
-    TA1->>SDK: 7. serveFiles()
-    SDK->>TA2: serveFiles(bootstrap package) (e.g. HTTP PUT)
+    NMP->>SDK: 7. serveFiles()
+    SDK->>CP: serveFiles(bootstrap package) (e.g. HTTP PUT)
 
     SDK->>CA: 8. displayBootstrapInfoToUser()
     CA->>Alice: address (HTTP URL)
     CA->>SDK: onUserAcknowledgementReceived()
-    SDK->>TA2: onUserAcknowledgementReceived()
+    SDK->>CP: onUserAcknowledgementReceived()
 
-    SDK->>TA2: 9. openConnection()
-    TA2->>SDK: onConnectionStatusChanged()
+    SDK->>CP: 9. openConnection()
+    CP->>SDK: onConnectionStatusChanged()
 
-    Note over TA2: request from Bob satisfied by serveFiles() (e.g. HTTP GET)
+    Note over CP: request from Bob satisfied by serveFiles() (e.g. HTTP GET)
 
-    TA2->>SDK: 10. receiveEncPkg()
-    SDK->>TA1: onBootstrapPkgReceived(persona, etc)
+    CP->>SDK: 10. receiveEncPkg()
+    SDK->>NMP: onBootstrapPkgReceived(persona, etc)
 
-    SDK->>TA2: 11. closeConnection()
-    TA2->>SDK: onConnectionStatusChanged()
+    SDK->>CP: 11. closeConnection()
+    CP->>SDK: onConnectionStatusChanged()
 
-    Note over TA1: 12. send add-persona request to servers
+    Note over NMP: 12. send add-persona request to servers
     loop for each server in committee
-      TA1->>SDK: sendEncryptedPackage()
-      SDK->>TA2: sendPackage()
-      TA2-->>Servers: package
+      NMP->>SDK: sendEncryptedPackage()
+      SDK->>CP: sendPackage()
+      CP-->>Servers: package
     end
 
     opt 13
       loop 13.1.receive and forward each load-link-request from Bob
-        Bob-->>TA2: load-link-request
-        TA2->>SDK: receiveEncPkg()
-        SDK->>TA1: processEncPkg()
-        TA1->>SDK: 13.2. (forward the request) sendEncryptedPackage()
-        SDK->>TA2: sendPackage()
-        TA2-->>Servers: package
+        Bob-->>CP: load-link-request
+        CP->>SDK: receiveEncPkg()
+        SDK->>NMP: processEncPkg()
+        NMP->>SDK: 13.2. (forward the request) sendEncryptedPackage()
+        SDK->>CP: sendPackage()
+        CP-->>Servers: package
       end
     end
 
-    Bob-->>TA2: 14. destroy-link-request
-    TA2->>SDK: receiveEncPkg()
-    SDK->>TA1: processEncPkg()
-    TA1->>SDK: onPackageStatusChanged()
-    SDK->>TA2: onPackageStatusChanged()
+    Bob-->>CP: 14. destroy-link-request
+    CP->>SDK: receiveEncPkg()
+    SDK->>NMP: processEncPkg()
+    NMP->>SDK: onPackageStatusChanged()
+    SDK->>CP: onPackageStatusChanged()
 
-    SDK->>TA2: 15. closeConnection()
-    TA2->>SDK: onConnectionStatusChanged()
-    SDK->>TA1: onConnectionStatusChanged()
+    SDK->>CP: 15. closeConnection()
+    CP->>SDK: onConnectionStatusChanged()
+    SDK->>NMP: onConnectionStatusChanged()
 
-    SDK->>TA2: 16. destroyLink()
-    TA2->>SDK: onLinkStatusChanged()
-    SDK->>TA1: onLinkStatusChanged()
+    SDK->>CP: 16. destroyLink()
+    CP->>SDK: onLinkStatusChanged()
+    SDK->>NMP: onLinkStatusChanged()
 
-    TA1->>SDK: 17. displayInfoToUser()
+    NMP->>SDK: 17. displayInfoToUser()
     SDK->>CA: displayInfoToUser()
     CA->>Alice: info
     CA->>SDK: onUserAcknowledgementReceived()
-    SDK->>TA1: onUserAcknowledgementReceived()
+    SDK->>NMP: onUserAcknowledgementReceived()
 
-    Note over TA2: 18. stopServing()
+    Note over CP: 18. stopServing()
 ```
 
 </br>
@@ -648,9 +648,9 @@ Bob, the node being introduced, will request the artifacts outside of the Messag
 ```mermaid
 sequenceDiagram
     participant Alice as Alice
-    participant TA2 as Comms Plugin
+    participant CP as Comms Plugin
     participant SDK as Core
-    participant TA1 as NetworkManager Plugin
+    participant NMP as NetworkManager Plugin
     participant AMP as Artifact Manager
     participant CA as App
     participant Bob as Bob
@@ -659,95 +659,95 @@ sequenceDiagram
     Note over SDK: initRaceSystem()
     Note over SDK: loadArtifactManagerPlugins()
     SDK ->> AMP: init()
-    SDK ->> TA1: init()
-    SDK ->> TA2: init()
+    SDK ->> NMP: init()
+    SDK ->> CP: init()
 
-    Note over TA1: 2. activate bootstrap and indirect channels 
+    Note over NMP: 2. activate bootstrap and indirect channels 
     loop for each channel
-      TA1 ->> SDK: activateChannel()
-      SDK ->> TA2: activateChannel()
-      TA2 ->> SDK: onChannelStatusChanged()
-      SDK ->> TA1: onChannelStatusChanged()
+      NMP ->> SDK: activateChannel()
+      SDK ->> CP: activateChannel()
+      CP ->> SDK: onChannelStatusChanged()
+      SDK ->> NMP: onChannelStatusChanged()
     end
 
-    Note over TA1: 3. load bidirectional connection(s) with server(s)
+    Note over NMP: 3. load bidirectional connection(s) with server(s)
     loop for each server in the server committee
-      TA1 ->> SDK: loadLinkAddress()
-      SDK ->> TA2: loadLinkAddress()
-      Note over TA2: generateLinkId()
-      TA2 ->> SDK: onLinkStatusChanged()
-      SDK ->> TA1: onLinkStatusChanged()
-      TA1 ->> SDK: openConnection()
-      SDK ->> TA2: openConnection()
+      NMP ->> SDK: loadLinkAddress()
+      SDK ->> CP: loadLinkAddress()
+      Note over CP: generateLinkId()
+      CP ->> SDK: onLinkStatusChanged()
+      SDK ->> NMP: onLinkStatusChanged()
+      NMP ->> SDK: openConnection()
+      SDK ->> CP: openConnection()
     end
 
     Note over SDK: 4.1 load direct bootstrap link with Alice
-    TA1 ->> SDK: loadLinkAddress()
-    SDK ->> TA2: loadLinkAddress()
-    Note over TA2: generateLinkId()
-    TA2 ->> SDK: onLinkStatusChanged()
-    SDK ->> TA1: onLinkStatusChanged()
+    NMP ->> SDK: loadLinkAddress()
+    SDK ->> CP: loadLinkAddress()
+    Note over CP: generateLinkId()
+    CP ->> SDK: onLinkStatusChanged()
+    SDK ->> NMP: onLinkStatusChanged()
     Note over SDK: 4.2 open receive connection on bootstrap link
-    TA1 ->> SDK: openConnection()
-    SDK ->> TA2: openConnection()
-    Note over TA2: generateConnectionId()
-    TA2 ->> SDK: onConnectionStatusChanged()
-    SDK ->> TA1: onConnectionStatusChanged()
-    Note over TA1: 4.3 open send connection on bootstrap link
-    TA1 ->> SDK: openConnection()
-    SDK ->> TA2: openConnection()
-    Note over TA2: generateConnectionId()
-    TA2 ->> SDK: onConnectionStatusChanged()
-    SDK ->> TA1: onConnectionStatusChanged()
+    NMP ->> SDK: openConnection()
+    SDK ->> CP: openConnection()
+    Note over CP: generateConnectionId()
+    CP ->> SDK: onConnectionStatusChanged()
+    SDK ->> NMP: onConnectionStatusChanged()
+    Note over NMP: 4.3 open send connection on bootstrap link
+    NMP ->> SDK: openConnection()
+    SDK ->> CP: openConnection()
+    Note over CP: generateConnectionId()
+    CP ->> SDK: onConnectionStatusChanged()
+    SDK ->> NMP: onConnectionStatusChanged()
 
-    Note over TA1: 5. send bootstrap package to Alice
-    TA1 ->> SDK: sendBootstrapPkg()
-    SDK ->> TA2: sendPackage()
-    TA2 -->> Alice: bootstrap package
-    TA2 ->> SDK: onPackageStatusChanged()
-    SDK ->> TA1: onPackageStatusChanged()
+    Note over NMP: 5. send bootstrap package to Alice
+    NMP ->> SDK: sendBootstrapPkg()
+    SDK ->> CP: sendPackage()
+    CP -->> Alice: bootstrap package
+    CP ->> SDK: onPackageStatusChanged()
+    SDK ->> NMP: onPackageStatusChanged()
 
-    Note over TA1: 6.1 Create indirect bidirectional link with all servers
+    Note over NMP: 6.1 Create indirect bidirectional link with all servers
     loop for each server in committee
-      TA1 ->> SDK: createLink()
-      SDK ->> TA2: createLink()
-      Note over TA2: generateLinkId()
+      NMP ->> SDK: createLink()
+      SDK ->> CP: createLink()
+      Note over CP: generateLinkId()
     end
-    Note over TA1: 6.2 open indirect connection with servers
-    TA1 ->> SDK: openConnection()
-    SDK ->> TA2: openConnection()
-    Note over TA2: generateConnectionId()
+    Note over NMP: 6.2 open indirect connection with servers
+    NMP ->> SDK: openConnection()
+    SDK ->> CP: openConnection()
+    Note over CP: generateConnectionId()
 
-    Note over TA1: 7. Send load-link-address request to forward onto server(s)
+    Note over NMP: 7. Send load-link-address request to forward onto server(s)
     loop for each server
-      TA1 ->> SDK: sendEncryptedPackage(requestLoadLinkAddress)
-      SDK ->> TA2: sendPackage()
-      TA2 -->> Server: POST requestLoadLinkAddress
-      TA2 ->> SDK: onPackageStatusChanged()
-      SDK ->> TA1: onPackageStatusChanged()
+      NMP ->> SDK: sendEncryptedPackage(requestLoadLinkAddress)
+      SDK ->> CP: sendPackage()
+      CP -->> Server: POST requestLoadLinkAddress
+      CP ->> SDK: onPackageStatusChanged()
+      SDK ->> NMP: onPackageStatusChanged()
     end
 
-    Note over TA1: 8. send DESTROY_LINK request for the bootstrap link to Alice
-    TA1 ->> SDK: sendEncryptedPackage()
-    SDK ->> TA2: sendPackage()
-    TA2 -->> Alice: DESTROY_LINK request
-    TA2 ->> SDK: onPackageStatusChanged()
-    SDK ->> TA1: onPackageStatusChanged()
+    Note over NMP: 8. send DESTROY_LINK request for the bootstrap link to Alice
+    NMP ->> SDK: sendEncryptedPackage()
+    SDK ->> CP: sendPackage()
+    CP -->> Alice: DESTROY_LINK request
+    CP ->> SDK: onPackageStatusChanged()
+    SDK ->> NMP: onPackageStatusChanged()
 
-    Note over TA1: 9.1 close bootstrap connection
-    SDK ->> TA1: closeConnection()
-    TA1 ->> SDK: closeConnection()
-    SDK ->> TA2: closeConnection()
-    TA2 ->> SDK: onConnectionStatusChanged()
-    SDK ->> TA1: onConnectionStatusChanged()
-    Note over TA1: 9.2 destroy bootstrap link
-    TA1 ->> SDK: destroyLink()
-    SDK ->> TA2: destroyLink()
-    TA2 ->> SDK: onLinkStatusChanged()
-    SDK ->> TA1: onLinkStatusChanged()
+    Note over NMP: 9.1 close bootstrap connection
+    SDK ->> NMP: closeConnection()
+    NMP ->> SDK: closeConnection()
+    SDK ->> CP: closeConnection()
+    CP ->> SDK: onConnectionStatusChanged()
+    SDK ->> NMP: onConnectionStatusChanged()
+    Note over NMP: 9.2 destroy bootstrap link
+    NMP ->> SDK: destroyLink()
+    SDK ->> CP: destroyLink()
+    CP ->> SDK: onLinkStatusChanged()
+    SDK ->> NMP: onLinkStatusChanged()
 
-    Note over TA1: 10. notify user indirect plugin is ready
-    TA1 ->> SDK: plugin ready
+    Note over NMP: 10. notify user indirect plugin is ready
+    NMP ->> SDK: plugin ready
     SDK ->> CA: plugin ready
     Note over CA: plugin ready
 ```
@@ -770,68 +770,68 @@ During ***this*** bootstrap process, the servers interact with Alice and Bob as 
 ```mermaid
 sequenceDiagram
     participant Alice as Alice
-    participant TA2 as Comms Plugin
+    participant CP as Comms Plugin
     participant SDK as Core
-    participant TA1 as NetworkManager Plugin
+    participant NMP as NetworkManager Plugin
     participant CA as App
     participant Bob as Bob
 
-    Alice -->> TA2: 1. link-create request
-    TA2 ->> SDK: receiveEncPkg()
-    SDK ->> TA1: processEncPkg()
+    Alice -->> CP: 1. link-create request
+    CP ->> SDK: receiveEncPkg()
+    SDK ->> NMP: processEncPkg()
 
-    Note over TA1: 2. getSupportedChannels()
-    TA1 ->> SDK: createLink()
-    SDK ->> TA2: createLink()
-    TA2 ->> SDK: onLinkStatusChanged()
-    SDK ->> TA1: onLinkStatusChanged()
-    TA2 ->> SDK: updateLinkProperties()
-    SDK ->> TA1: onLinkPropertiesChanged()
-    TA1 ->> SDK: onLinkStatusChanged()
+    Note over NMP: 2. getSupportedChannels()
+    NMP ->> SDK: createLink()
+    SDK ->> CP: createLink()
+    CP ->> SDK: onLinkStatusChanged()
+    SDK ->> NMP: onLinkStatusChanged()
+    CP ->> SDK: updateLinkProperties()
+    SDK ->> NMP: onLinkPropertiesChanged()
+    NMP ->> SDK: onLinkStatusChanged()
 
-    TA1 ->> SDK: 3. sendPackage()
-    SDK ->> TA2: sendPackage()
-    TA2 -->> Alice: POST link-create response
-    TA2 ->> SDK: onPackageStatusChanged()
-    SDK ->> TA1: onPackageStatusChanged()
+    NMP ->> SDK: 3. sendPackage()
+    SDK ->> CP: sendPackage()
+    CP -->> Alice: POST link-create response
+    CP ->> SDK: onPackageStatusChanged()
+    SDK ->> NMP: onPackageStatusChanged()
 
-    Alice -->> TA2: 4. add-persona request
-    TA2 ->> SDK: receiveEncPkg()
-    SDK ->> TA1: processEncPkg()
-    Note over TA1: addClient()
+    Alice -->> CP: 4. add-persona request
+    CP ->> SDK: receiveEncPkg()
+    SDK ->> NMP: processEncPkg()
+    Note over NMP: addClient()
 
-    TA1 ->> SDK: 5. openConnection()
-    SDK ->> TA2: openConnection()
-    TA2 ->> SDK: onConnectionStatusChanged()
-    SDK ->> TA1: onConnectionStatusChanged()
+    NMP ->> SDK: 5. openConnection()
+    SDK ->> CP: openConnection()
+    CP ->> SDK: onConnectionStatusChanged()
+    SDK ->> NMP: onConnectionStatusChanged()
 
-    TA1 ->> SDK: 6. displayInfoToUser()
+    NMP ->> SDK: 6. displayInfoToUser()
     SDK ->> CA: displayInfoToUser()
     Note over CA: NetworkManager ready
     CA ->> SDK: onUserAcknowledgementReceived()
-    SDK ->> TA1: onUserAcknowledgementReceived()
+    SDK ->> NMP: onUserAcknowledgementReceived()
 
-    Bob -->> TA2: 7. GET load-link-address request
-    TA2 ->> SDK: receiveEncPkg()
-    SDK ->> TA1: processEncPkg()
+    Bob -->> CP: 7. GET load-link-address request
+    CP ->> SDK: receiveEncPkg()
+    SDK ->> NMP: processEncPkg()
 
-    TA1 ->> SDK: 8. loadLinkAddress()
-    SDK ->> TA2: loadLinkAddress()
-    Note over TA2: generateLinkId()
-    TA2 ->> SDK: onLinkStatusChanged()
-    SDK ->> TA1: onLinkStatusChanged()
+    NMP ->> SDK: 8. loadLinkAddress()
+    SDK ->> CP: loadLinkAddress()
+    Note over CP: generateLinkId()
+    CP ->> SDK: onLinkStatusChanged()
+    SDK ->> NMP: onLinkStatusChanged()
 
-    TA1 ->> SDK: 9. openConnection()
-    SDK ->> TA2: openConnection()
-    TA2 ->> SDK: onConnectionStatusChanged()
-    SDK ->> TA1: onConnectionStatusChanged()
-    Note over TA1: getPersonasForLink()
+    NMP ->> SDK: 9. openConnection()
+    SDK ->> CP: openConnection()
+    CP ->> SDK: onConnectionStatusChanged()
+    SDK ->> NMP: onConnectionStatusChanged()
+    Note over NMP: getPersonasForLink()
 
-    TA1 ->> SDK: 10. onPluginStatusChanged()
+    NMP ->> SDK: 10. onPluginStatusChanged()
     SDK ->> CA: displayInfoToUser()
     Note over CA: plugin ready
     CA ->> SDK: onUserAcknowledgementReceived()
-    SDK ->> TA1: onUserAcknowledgementReceived()    
+    SDK ->> NMP: onUserAcknowledgementReceived()    
 ```
 
 ## Project Structure
@@ -992,17 +992,17 @@ plugins and the C++ RACE core.
 interfaces, while Golang bindings only exist for the Comms plugin interface.
 
 The source in this directory produces the following artifacts:
-* `ta1PluginBindings.py`
+* `networkManagerPluginBindings.py`
   * Python module containing the Network Manager plugin and core APIs
-* `_ta1PluginBindings.so`
+* `_networkManagerPluginBindings.so`
   * Python Network Manager plugin and core native bindings
-* `ta2PluginBindings.py`
+* `commsPluginBindings.py`
   * Python module containing the Comms plugin and core APIs
-* `_ta2PluginBindings.so`
+* `_commsPluginBindings.so`
   * Python Comms plugin and core native bindings
-* `ta2PluginBindingsGolang.go`
+* `commsPluginBindingsGolang.go`
   * Golang module containing the Comms plugin and core APIs
-* `ta2PluginBindingsGolang.so`
+* `commsPluginBindingsGolang.so`
   * Golang Comms plugin and core native bindings
 
 ###### `racetestapp-shared`
@@ -1078,15 +1078,15 @@ of a RACE plugin for all supported plugin languages:
 
 * `plugin-artifact-manager-twosix-cpp` - C++-based Artifact Manager plugin
   example
-* `plugin-ta1-twosix-cpp` - C++-based Network Manager plugin example/stub
-* `plugin-ta1-twosix-python` - Python-based Metwork Manager plugin example
-* `plugin-ta2-twosix-cpp` - C++-based Comms plugin example/stub
-* `plugin-ta2-twosix-decomposed-cpp` - C++-based decomposed Comms plugin
+* `plugin-network-manager-twosix-cpp` - C++-based Network Manager plugin example/stub
+* `plugin-network-manager-twosix-python` - Python-based Metwork Manager plugin example
+* `plugin-comms-twosix-cpp` - C++-based Comms plugin example/stub
+* `plugin-comms-twosix-decomposed-cpp` - C++-based decomposed Comms plugin
   example/stub
-* `plugin-ta2-twosix-golang` - Golang-based Comms plugin example
-* `plugin-ta2-twosix-java` - Java-based Comms plugin example
-* `plugin-ta2-twosix-python` - Python-based Comms plugin example
-* `plugin-ta2-twosix-rust` - Rust-based Comms plugin example
+* `plugin-comms-twosix-golang` - Golang-based Comms plugin example
+* `plugin-comms-twosix-java` - Java-based Comms plugin example
+* `plugin-comms-twosix-python` - Python-based Comms plugin example
+* `plugin-comms-twosix-rust` - Rust-based Comms plugin example
 
 #### [`race-in-the-box`](https://github.com/tst-race/race-in-the-box)
 
@@ -1399,7 +1399,7 @@ The steps to test a change a RACE plugin are as follows:
 1. Create a deployment using the locally-built plugin
     ```sh
     rib deployment local create \
-        --ta1-plugin local=/code/PLUGIN/kit
+        --network-manager-kit local=/code/PLUGIN/kit
     ```
     or
     ```sh
@@ -1426,7 +1426,7 @@ The steps to test a change an exemplar plugin are as follows:
     ```sh
     # Network Manager plugin
     rib deployment local create \
-        --ta1-plugin local=/code/race-core/PLUGIN/kit
+        --network-manager-kit local=/code/race-core/PLUGIN/kit
     ```
     or
     ```sh
