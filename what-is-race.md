@@ -37,7 +37,7 @@ Owing to RACE's modular nature, many of its pieces were developed by separate te
   + [Destini](https://github.com/tst-race/race-destini)
   + [Obfs](https://github.com/tst-race/race-obfs) 
   + [Snowflake](https://github.com/tst-race/race-snowflake) 
-  + [Raven](https://github.com/tst-race/race-obfs) 
+  + [Raven](https://github.com/tst-race/race-raven) 
   + [SemanticSteg](https://github.com/tst-race/race-semanticsteg) 
   + [Butkus](https://github.com/tst-race/race-butkus) 
 * Artifact Manager Plugin Implementations
