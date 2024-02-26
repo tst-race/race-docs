@@ -479,7 +479,7 @@ def get_cli_arguments():
     required.add_argument(
         "--ta1-request",
         dest="ta1_request_file",
-        help="Requested links from TA1",
+        help="Requested links from Network Manager",
         required=True,
         type=str,
     )
@@ -1260,7 +1260,7 @@ def get_cli_arguments():
     required.add_argument(
         "--ta1-request",
         dest="ta1_request_file",
-        help="Requested links from TA1",
+        help="Requested links from Network Manager",
         required=True,
         type=str,
     )

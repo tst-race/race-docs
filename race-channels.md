@@ -15,7 +15,7 @@ We provide a list of channels below, along with the `deployment create` argument
 | [destiniPixelfed](#destiniPixelfed) | :white_check_mark: | :white_check_mark: | Steganographically encodes data into existing images posted to a redis "whiteboard" |
 | [destiniAvideo](#destiniAvideo) | :white_check_mark: | :x: | Steganographically encodes data into videos posted to a redis "whiteboard" |
 | [destiniDash](#destiniDash) | :x: | :x: | Steganographically encodes data into videos streamed from one RACE node to another; uses destiniPixelfed as a signaling mechanism for orchestrating video streams |
-| [butkus](#butkus)* | :white_check_mark: | :x: | Encodes data into _generated_ natural language text; *: decomposed Encoding _component_, used in combination with other components, see [Decomposed Comms Plugins]() |
+| [butkusLocalRedis](#butkus)* | :white_check_mark: | :x: | Encodes data into _generated_ natural language text; *: decomposed Encoding _component_, used in combination with other components, see [Decomposed Comms Plugins]() |
 
 
 
@@ -23,7 +23,7 @@ We provide a list of channels below, along with the `deployment create` argument
 __Deployment Create Argument:__ 
 ```
 --comms-channel=twoSixDirectCpp \
---comms-kit=tag=2.6.0,org=tst-race,repo=race-core,asset=plugin-comms-twosix-cpp.tar.gz
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-core,asset=plugin-comms-twosix-cpp.tar.gz
 ```
 
 __Source Code Repository:__ https://github.com/tst-race/https://github.com/tst-race/race-core/tree/2.6.0/plugin-comms-twosix-cpp
@@ -33,7 +33,7 @@ __Source Code Repository:__ https://github.com/tst-race/https://github.com/tst-r
 __Deployment Create Argument:__ 
 ```
 --comms-channel=twoSixIndirectCpp \
---comms-kit=tag=2.6.0,org=tst-race,repo=race-core,asset=plugin-comms-twosix-cpp.tar.gz
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-core,asset=plugin-comms-twosix-cpp.tar.gz
 ```
 
 __Source Code Repository:__ https://github.com/tst-race/https://github.com/tst-race/race-core/tree/2.6.0/plugin-comms-twosix-cpp
@@ -43,7 +43,7 @@ __Source Code Repository:__ https://github.com/tst-race/https://github.com/tst-r
 __Deployment Create Argument:__ 
 ```
 --comms-channel=obfs \
---comms-kit=tag=2.6.0,org=tst-race,repo=race-obfs
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-obfs
 ```
 
 
@@ -54,7 +54,7 @@ __Source Code Repository:__ https://github.com/tst-race/race-obfs
 __Deployment Create Argument:__ 
 ```
 --comms-channel=snowflake \ 
---comms-kit=tag=2.6.0,org=tst-race,repo=race-snowflake
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-snowflake
 ```
 
 
@@ -65,7 +65,7 @@ __Source Code Repository:__ https://github.com/tst-race/race-snowflake
 __Deployment Create Argument:__ 
 ```
 --comms-channel=raven \ 
---comms-kit=tag=2.6.0,org=tst-race,repo=race-raven
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-raven
 ```
 
 
@@ -76,7 +76,7 @@ __Source Code Repository:__ https://github.com/tst-race/race-raven
 __Deployment Create Argument:__ 
 ```
 --comms-channel=ssEmail \
---comms-kit=tag=2.6.0,org=tst-race,repo=race-semanticsteg
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-semanticsteg
 ```
 
 
@@ -86,7 +86,7 @@ __Source Code Repository:__ https://github.com/tst-race/race-semanticsteg
 __Deployment Create Argument:__ 
 ```
 --comms-channel=ssRedis \
---comms-kit=tag=2.6.0,org=tst-race,repo=race-semanticsteg
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-semanticsteg
 ```
 
 
@@ -96,7 +96,7 @@ __Source Code Repository:__ https://github.com/tst-race/race-semanticsteg
 __Deployment Create Argument:__ 
 ```
 --comms-channel=destiniPixelfed \
---comms-kit=tag=2.6.0,org=tst-race,repo=race-destini,asset=race-destini-pixelfed.tar.gz
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-destini,asset=race-destini-pixelfed.tar.gz
 ```
 
 
@@ -108,7 +108,7 @@ __Deployment Create Argument:__
 ```
 
 --comms-channel=destiniAvideo \
---comms-kit=tag=2.6.0,org=tst-race,repo=race-destini,asset=race-destini-avideo.tar.gz
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-destini,asset=race-destini-avideo.tar.gz
 
 ```
 
@@ -119,7 +119,7 @@ __Source Code Repository:__ https://github.com/tst-race/race-destini
 __Deployment Create Argument:__ 
 ```
 --comms-channel=destiniDash \
---comms-kit=tag=2.6.0,org=tst-race,repo=race-destini,asset=race-destini-dash.tar.gz
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-destini,asset=race-destini-dash.tar.gz
 ```
 
 
@@ -130,8 +130,8 @@ __Source Code Repository:__ https://github.com/tst-race/race-destini
 __Deployment Create Argument:__ 
 
 ```
---comms-channel=butkusTwoSixRedisComposition --comms-kit=tag=2.6.0,org=tst-race,repo=race-butkus \ 
---comms-kit=tag=2.6.0,org=tst-race,repo=race-core,asset=plugin-comms-twosix-decomposed-cpp.tar.gz
+--comms-channel=butkusLocalRedis --comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-butkus \ 
+--comms-kit=tag=2.6.0-v1,org=tst-race,repo=race-core,asset=plugin-comms-twosix-decomposed-cpp.tar.gz
 ```
 
 __Source Code Repository:__ https://github.com/tst-race/race-butkus
