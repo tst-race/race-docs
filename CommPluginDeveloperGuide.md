@@ -60,7 +60,7 @@
   - [Arguments](#arguments)
   - [Outputs](#outputs)
     - [genesis-link-addresses.json](#genesis-link-addressesjson)
-    - [fulfilled-ta1-request.json](#fulfilled-ta1-requestjson)
+    - [fulfilled-network-manager-request.json](#fulfilled-network-manager-requestjson)
     - [user-responses.json](#user-responsesjson)
 - [Adding a dependency (via RUNPATH)](#adding-a-dependency-via-runpath)
 - [Valid Common User Input](#valid-common-user-input)
@@ -101,7 +101,7 @@ Kits are required to have two parts. One is a manifest.json file that declares w
 
 The manifest.json for a kit will list what plugins are supplied by a kit, what channels and components they contain, what channels can be created the components supplied by a kit, as well as additional info about what parameters and properties each channel needs.
 
-Shared libraries are loaded and symbols `createPluginTa2()` and `destroyPluginTa2()` (in the unified case) or `create*` and `destroy*` (in the decomposed case, where * is the type of component) looked up. These symbols are called to create c++ objects that implement the corresponding interface.
+Shared libraries are loaded and symbols `createPluginComms()` and `destroyPluginComms()` (in the unified case) or `create*` and `destroy*` (in the decomposed case, where * is the type of component) looked up. These symbols are called to create c++ objects that implement the corresponding interface.
 
 # Comm plugin directory outline
 ```
@@ -127,36 +127,36 @@ The kit directory contains the necessary artifacts to use in a running deploymen
 kit
 ├── artifacts
 │   ├── android-arm64-v8a-client
-│   │   └── PluginTa2TwoSixStubDecomposed
-│   │       ├── libPluginTa2TwoSixStubEncoding.so
-│   │       ├── libPluginTa2TwoSixStubTransport.so
-│   │       ├── libPluginTa2TwoSixStubUserModel.so
+│   │   └── PluginCommsTwoSixStubDecomposed
+│   │       ├── libPluginCommsTwoSixStubEncoding.so
+│   │       ├── libPluginCommsTwoSixStubTransport.so
+│   │       ├── libPluginCommsTwoSixStubUserModel.so
 │   │       └── manifest.json
 │   ├── android-x86_64-client
-│   │   └── PluginTa2TwoSixStubDecomposed
+│   │   └── PluginCommsTwoSixStubDecomposed
 │   │       ├── actions.json
-│   │       ├── libPluginTa2TwoSixStubEncoding.so
-│   │       ├── libPluginTa2TwoSixStubTransport.so
-│   │       ├── libPluginTa2TwoSixStubUserModelFile.so
-│   │       ├── libPluginTa2TwoSixStubUserModel.so
+│   │       ├── libPluginCommsTwoSixStubEncoding.so
+│   │       ├── libPluginCommsTwoSixStubTransport.so
+│   │       ├── libPluginCommsTwoSixStubUserModelFile.so
+│   │       ├── libPluginCommsTwoSixStubUserModel.so
 │   │       └── manifest.json
 │   ├── linux-x86_64-client
-│   │   └── PluginTa2TwoSixStubDecomposed
+│   │   └── PluginCommsTwoSixStubDecomposed
 │   │       ├── actions.json
-│   │       ├── libPluginTa2TwoSixStubEncoding.so
-│   │       ├── libPluginTa2TwoSixStubTransport.so
-│   │       ├── libPluginTa2TwoSixStubUserModelCsv.so
-│   │       ├── libPluginTa2TwoSixStubUserModelFile.so
-│   │       ├── libPluginTa2TwoSixStubUserModel.so
+│   │       ├── libPluginCommsTwoSixStubEncoding.so
+│   │       ├── libPluginCommsTwoSixStubTransport.so
+│   │       ├── libPluginCommsTwoSixStubUserModelCsv.so
+│   │       ├── libPluginCommsTwoSixStubUserModelFile.so
+│   │       ├── libPluginCommsTwoSixStubUserModel.so
 │   │       └── manifest.json
 │   └── linux-x86_64-server
-│       └── PluginTa2TwoSixStubDecomposed
+│       └── PluginCommsTwoSixStubDecomposed
 │           ├── actions.json
-│           ├── libPluginTa2TwoSixStubEncoding.so
-│           ├── libPluginTa2TwoSixStubTransport.so
-│           ├── libPluginTa2TwoSixStubUserModelCsv.so
-│           ├── libPluginTa2TwoSixStubUserModelFile.so
-│           ├── libPluginTa2TwoSixStubUserModel.so
+│           ├── libPluginCommsTwoSixStubEncoding.so
+│           ├── libPluginCommsTwoSixStubTransport.so
+│           ├── libPluginCommsTwoSixStubUserModelCsv.so
+│           ├── libPluginCommsTwoSixStubUserModelFile.so
+│           ├── libPluginCommsTwoSixStubUserModel.so
 │           └── manifest.json
 └── channels
     └── twoSixIndirectComposition
@@ -185,11 +185,11 @@ This section will walk through creating a minimal non-functional plugin. The fol
 ## Add a stub plugin file
 Add plugin.cpp to the source directory, containing:
 ```c++
-#include <IRacePluginTa2.h>
+#include <IRacePluginComms.h>
 
-class StubCommPlugin : public IRacePluginTa2 {
+class StubCommPlugin : public IRacePluginComms {
 public:
-    explicit StubCommPlugin(IRaceSdkTa2 *raceSdkIn) {}
+    explicit StubCommPlugin(IRaceSdkComms *raceSdkIn) {}
     virtual ~StubCommPlugin() {}
     virtual PluginResponse init(const PluginConfig &pluginConfig) {
         return PLUGIN_ERROR;
@@ -246,11 +246,11 @@ public:
     }
 };
 
-IRacePluginTa2 *createPluginTa2(IRaceSdkTa2 *sdk) {
+IRacePluginComms *createPluginComms(IRaceSdkComms *sdk) {
     return new StubCommPlugin(sdk);
 }
 
-void destroyPluginTa2(IRacePluginTa2 *plugin) {
+void destroyPluginComms(IRacePluginComms *plugin) {
     delete static_cast<StubCommPlugin *>(plugin);
 }
 
@@ -266,7 +266,7 @@ Add a manifest.json file to the source directory, containing:
     "plugins": [
         {
             "file_path": "StubCommPlugin",
-            "plugin_type": "TA2",
+            "plugin_type": "comms",
             "file_type": "shared_library",
             "node_type": "any",
             "shared_library_path": "libStubCommPlugin.so",
@@ -380,8 +380,8 @@ def main():
     with open(cli_args.range_config_file, "r") as range_config_file:
         range_config = json.load(range_config_file)
 
-    with open(cli_args.ta1_request_file, "r") as ta1_request_file:
-        ta1_request = json.load(ta1_request_file)
+    with open(cli_args.network_manager_request_file, "r") as network_manager_request_file:
+        network_manager_request = json.load(network_manager_request_file)
 
     if os.path.isdir(cli_args.config_dir) and cli_args.overwrite:
         shutil.rmtree(cli_args.config_dir)
@@ -390,22 +390,22 @@ def main():
 
     generate_configs(
         range_config,
-        ta1_request,
+        network_manager_request,
         cli_args.config_dir,
     )
 
 
-def generate_configs(range_config, ta1_request, config_dir):
-    (link_addresses, fulfilled_ta1_request) = generate_genesis_link_addresses(
+def generate_configs(range_config, network_manager_request, config_dir):
+    (link_addresses, fulfilled_network_manager_request) = generate_genesis_link_addresses(
         range_config,
-        ta1_request,
+        network_manager_request,
     )
 
     with open(f"{config_dir}/genesis-link-addresses.json", "w") as link_addresses_file:
         json.dump({CHANNEL_ID: link_addresses}, link_addresses_file)
 
-    with open(f"{config_dir}/fulfilled-ta1-request.json", "w") as request_file:
-        json.dump(fulfilled_ta1_request, request_file)
+    with open(f"{config_dir}/fulfilled-network-manager-request.json", "w") as request_file:
+        json.dump(fulfilled_network_manager_request, request_file)
 
     with open(f"{config_dir}/user-responses.json", "w") as user_responses_file:
         json.dump({}, user_responses_file)
@@ -413,19 +413,19 @@ def generate_configs(range_config, ta1_request, config_dir):
 
 def generate_genesis_link_addresses(
     range_config,
-    ta1_request,
+    network_manager_request,
 ):
     link_addresses = {}
-    fulfilled_ta1_request = {"links": []}
+    fulfilled_network_manager_request = {"links": []}
 
     # Loop through requested links and create links
-    for link_idx, requested_link in enumerate(ta1_request["links"]):
+    for link_idx, requested_link in enumerate(network_manager_request["links"]):
         # Only create links for request for this channel
         if CHANNEL_ID not in requested_link["channels"]:
             continue
         requested_link["channels"] = [CHANNEL_ID]
 
-        fulfilled_ta1_request["links"].append(requested_link)
+        fulfilled_network_manager_request["links"].append(requested_link)
 
         sender_node = requested_link["sender"]
         if sender_node not in link_addresses:
@@ -451,7 +451,7 @@ def generate_genesis_link_addresses(
                 }
             )
 
-    return (link_addresses, fulfilled_ta1_request)
+    return (link_addresses, fulfilled_network_manager_request)
 
 
 
@@ -477,8 +477,8 @@ def get_cli_arguments():
         type=str,
     )
     required.add_argument(
-        "--ta1-request",
-        dest="ta1_request_file",
+        "--network-manager-request",
+        dest="network_manager_request_file",
         help="Requested links from Network Manager",
         required=True,
         type=str,
@@ -627,7 +627,7 @@ See the Channel and Link properties guide for more information about those struc
 
 ## The comm core interface
 
-This is the interface that the comms plugin uses to communicate with the rest of the race application. The core implements this interface and the plugin is given an object that implements it in the `createPluginTa2()` call.
+This is the interface that the comms plugin uses to communicate with the rest of the race application. The core implements this interface and the plugin is given an object that implements it in the `createPluginComms()` call.
 
 ```c++
 SdkResponse onChannelStatusChanged(RaceHandle handle, std::string channelGid, ChannelStatus status, ChannelProperties properties, int32_t timeout);
@@ -730,7 +730,7 @@ SdkResponse unblockQueue(ConnectionID connId);
 
 ## The comm plugin interface
 
-This is the interface that the rest of the RACE application uses to communicate with the comm plugin. The comm plugin must implement this interface and return the implementing object in the `createPluginTa2()` call.
+This is the interface that the rest of the RACE application uses to communicate with the comm plugin. The comm plugin must implement this interface and return the implementing object in the `createPluginComms()` call.
 
 ---
 ```c++
@@ -992,7 +992,7 @@ const RaceVersionInfo raceVersion = RACE_VERSION;
     "plugins": [
         {
             "file_path": "StubDecomposedPlugin",
-            "plugin_type": "TA2",
+            "plugin_type": "comms",
             "file_type": "shared_library",
             "node_type": "any",
             "shared_library_path": "libStubEncoding.so",
@@ -1000,7 +1000,7 @@ const RaceVersionInfo raceVersion = RACE_VERSION;
         },
         {
             "file_path": "StubDecomposedPlugin",
-            "plugin_type": "TA2",
+            "plugin_type": "comms",
             "file_type": "shared_library",
             "node_type": "any",
             "shared_library_path": "libStubTransport.so",
@@ -1008,7 +1008,7 @@ const RaceVersionInfo raceVersion = RACE_VERSION;
         },
         {
             "file_path": "StubDecomposedPlugin",
-            "plugin_type": "TA2",
+            "plugin_type": "comms",
             "file_type": "shared_library",
             "node_type": "any",
             "shared_library_path": "libStubUserModel.so",
@@ -1161,8 +1161,8 @@ def main():
     with open(cli_args.range_config_file, "r") as range_config_file:
         range_config = json.load(range_config_file)
 
-    with open(cli_args.ta1_request_file, "r") as ta1_request_file:
-        ta1_request = json.load(ta1_request_file)
+    with open(cli_args.network_manager_request_file, "r") as network_manager_request_file:
+        network_manager_request = json.load(network_manager_request_file)
 
     if os.path.isdir(cli_args.config_dir) and cli_args.overwrite:
         shutil.rmtree(cli_args.config_dir)
@@ -1171,22 +1171,22 @@ def main():
 
     generate_configs(
         range_config,
-        ta1_request,
+        network_manager_request,
         cli_args.config_dir,
     )
 
 
-def generate_configs(range_config, ta1_request, config_dir):
-    (link_addresses, fulfilled_ta1_request) = generate_genesis_link_addresses(
+def generate_configs(range_config, network_manager_request, config_dir):
+    (link_addresses, fulfilled_network_manager_request) = generate_genesis_link_addresses(
         range_config,
-        ta1_request,
+        network_manager_request,
     )
 
     with open(f"{config_dir}/genesis-link-addresses.json", "w") as link_addresses_file:
         json.dump({CHANNEL_ID: link_addresses}, link_addresses_file)
 
-    with open(f"{config_dir}/fulfilled-ta1-request.json", "w") as request_file:
-        json.dump(fulfilled_ta1_request, request_file)
+    with open(f"{config_dir}/fulfilled-network-manager-request.json", "w") as request_file:
+        json.dump(fulfilled_network_manager_request, request_file)
 
     with open(f"{config_dir}/user-responses.json", "w") as user_responses_file:
         json.dump({}, user_responses_file)
@@ -1194,19 +1194,19 @@ def generate_configs(range_config, ta1_request, config_dir):
 
 def generate_genesis_link_addresses(
     range_config,
-    ta1_request,
+    network_manager_request,
 ):
     link_addresses = {}
-    fulfilled_ta1_request = {"links": []}
+    fulfilled_network_manager_request = {"links": []}
 
     # Loop through requested links and create links
-    for link_idx, requested_link in enumerate(ta1_request["links"]):
+    for link_idx, requested_link in enumerate(network_manager_request["links"]):
         # Only create links for request for this channel
         if CHANNEL_ID not in requested_link["channels"]:
             continue
         requested_link["channels"] = [CHANNEL_ID]
 
-        fulfilled_ta1_request["links"].append(requested_link)
+        fulfilled_network_manager_request["links"].append(requested_link)
 
         sender_node = requested_link["sender"]
         if sender_node not in link_addresses:
@@ -1232,7 +1232,7 @@ def generate_genesis_link_addresses(
                 }
             )
 
-    return (link_addresses, fulfilled_ta1_request)
+    return (link_addresses, fulfilled_network_manager_request)
 
 
 
@@ -1258,8 +1258,8 @@ def get_cli_arguments():
         type=str,
     )
     required.add_argument(
-        "--ta1-request",
-        dest="ta1_request_file",
+        "--network-manager-request",
+        dest="network_manager_request_file",
         help="Requested links from Network Manager",
         required=True,
         type=str,
@@ -1730,7 +1730,7 @@ The manifest.json file is a json file that informs the core of properties of eac
     "plugins": [
         {
             "file_path": "<kit name>",
-            "plugin_type": "TA2",
+            "plugin_type": "comms",
             "file_type": "<shared_library|python>",
             "node_type": "any",
             "shared_library_path": "<shared library path>",
@@ -1781,7 +1781,7 @@ The name of the kit containing this plugin
 ```
 plugin_type
 ```
-This should be "TA2" for a comm plugin
+This should be "comms" for a comm plugin
 
 ---
 ```
@@ -2008,9 +2008,9 @@ The `config-dir` argument contains the location that output files should be writ
 
 ---
 ```
---ta1-request <filepath>
+--network-manager-request <filepath>
 ```
-The `ta1-request` file contains the information about what links should be created. The file is of the format:
+The `network-manager-request` file contains the information about what links should be created. The file is of the format:
 
 
 ```json
@@ -2066,8 +2066,8 @@ The genesis link address file contains link addresses for all the links that sho
 
 The address field must contain all the information necessary to create or load the link.
 
-### fulfilled-ta1-request.json
-The fulfilled-ta1-request file contains which links were fulfilled. The format is identical to the ta1-request format
+### fulfilled-network-manager-request.json
+The fulfilled-network-manager-request file contains which links were fulfilled. The format is identical to the network-manager-request format
 
 ```json
 {
@@ -2107,8 +2107,8 @@ If a comm plugin requires additional shared libraries that are not included by t
 kit
 ├── artifacts
 │   ├── android-arm64-v8a-client
-│   │   └── PluginTa2TwoSixStubDecomposed
-│   │       ├── libPluginTa2TwoSixStubEncoding.so
+│   │   └── PluginCommsTwoSixStubDecomposed
+│   │       ├── libPluginCommsTwoSixStubEncoding.so
 |   |       └── manifest.json
 ...
 ```
@@ -2116,7 +2116,7 @@ kit
 Linking may be done as normal, but the RPATH must be set on the plugin library in order to find the dependency at runtime.
 
 ```cmake
-set_target_properties(PluginTa2TwoSixStubEncoding PROPERTIES
+set_target_properties(PluginCommsTwoSixStubEncoding PROPERTIES
     BUILD_RPATH "\${ORIGIN}/lib"
     INSTALL_RPATH "\${ORIGIN}/lib"
 )
@@ -2139,7 +2139,7 @@ Follow the directions for running a race deployment with [RIB](https://github.co
 ```
 rib deployment local create \
     --name github-test3 \
-    --comms-kit core=plugin-ta2-twosix-cpp \
+    --comms-kit core=plugin-comms-twosix-cpp \
     --comms-kit local=/code/example-decomposed-comm-plugin/kit/ \
     --comms-channel StubComposition \
     --comms-channel twoSixDirectCpp \
@@ -2174,12 +2174,12 @@ Here is an example manifest.json for a unified plugin:
 {
     "plugins": [
         {
-            "file_path": "PluginTa2TwoSixPython",
-            "plugin_type": "TA2",
+            "file_path": "PluginCommsTwoSixPython",
+            "plugin_type": "comms",
             "file_type": "python",
             "node_type": "any",
-            "python_module": "PluginTa2TwoSixPython.PluginTA2TwoSixPython",
-            "python_class": "PluginTA2TwoSixPython",
+            "python_module": "PluginCommsTwoSixPython.PluginCommsTwoSixPython",
+            "python_class": "PluginCommsTwoSixPython",
             "channels": ["twoSixDirectPython", "twoSixIndirectPython"]
         }
     ],
